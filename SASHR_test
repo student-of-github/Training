@@ -1,0 +1,51 @@
+libname hr "/data/04/rzuniga-admin/data/Tests/HR";
+libname SBG oracle user=ganeshk258 pw=Intuit8901 path=BINPRD01_SBGROUP schema=IOP preserve_col_names=yes readbuff=110000 insertbuff=50000;
+
+proc tabulate data=hr.hr_events;
+class experiment_id variation_id event_name;
+table experiment_id*variation_id, event_name;
+run;
+
+proc sql;
+select event_name,count(*),count(distinct payrollcompanyid)
+from hr.hr_events
+group by 1
+order by 1;
+quit;
+
+data hr.iop (compress=yes);
+set sbg.iop_company_metrics
+ (keep=
+  	companyid 
+  	signupdate
+  	didsomethingdate
+	addedemployeedate
+	finishedemployeesdate
+	taxessetup
+	historycreateddate
+	firstcreatedcheckdate
+	firstcheck
+	secondcheck
+	starttrialdate
+	firstbillingdate
+	terminationdate 
+	realm_id  
+	partnerid 
+	product
+	channel
+  );
+  where partnerid in (26,30) 
+      and product in ("FullService","Plus")
+      and  datepart(signupdate) >="01APR2015"d;
+
+qbo_company_id	=1*reverse(substr(reverse(realm_id),1,index(reverse(realm_id),"_")-1));
+run; 
+
+proc sql;
+create table hr.hr_events2 as
+select a.*, b.qbo_company_id 
+from hr.hr_events a left join hr.iop b 
+ on a.payrollcompanyid=b.companyid;
+where event_name="hr-package-accept-trial";
+quit; 
+
