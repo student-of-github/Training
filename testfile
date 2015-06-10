@@ -1,0 +1,6 @@
+this is a test;
+data xxx;
+do i=1 to 100;
+output;
+end;
+run;
