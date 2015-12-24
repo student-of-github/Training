@@ -1,0 +1,6 @@
+this is a new file
+and I am adding some lines
+this line was added in edit branch
+and this one was added in master branch
+and this one was added in edit branch
+
