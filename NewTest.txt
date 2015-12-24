@@ -1,0 +1,3 @@
+this is a vi editor
+and it seems to work quite well
+lets commit
